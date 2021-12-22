@@ -1,4 +1,4 @@
-if (process.env.IS_TS) {
+if (!process.env.IS_TS) {
   require('module-alias/register')
 }
 
