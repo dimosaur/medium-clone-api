@@ -7,8 +7,12 @@ const config: ConnectionOptions = {
   username: 'mediumclone',
   password: 'password',
   database: 'mediumclone',
-  entities: [__dirname + '/**/*.entity{.ts, .js}'],
-  synchronize: true,
+  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  synchronize: false,
+  migrations: [__dirname + '/migrations/**/*{.ts,.js} '],
+  cli: {
+    migrationsDir: 'src/migrations',
+  },
 }
 
 export default config
