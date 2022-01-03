@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
+import slugify from 'slugify'
 
 import { TagEntity } from '@app/tag/tag.entity'
 import TagsResponseInterface from '@app/tag/types/tagsResponse.interface'
@@ -17,6 +18,7 @@ export class TagService {
   }
 
   async findOrCreateTags(tagNames: string[]): Promise<TagEntity[]> {
+    tagNames = tagNames.map((name) => slugify(name, { lower: true }))
     const tagsToInsert = tagNames.map((name) => ({ name }))
 
     await this.tagsRepository
