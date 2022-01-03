@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { UserEntity } from '@app/user/user.entity'
 
 @Entity({ name: 'articles' })
 export class ArticleEntity {
@@ -24,6 +26,12 @@ export class ArticleEntity {
 
   @Column()
   body: string
+
+  @ManyToOne(
+    () => UserEntity,
+    (user: UserEntity): ArticleEntity[] => user.articles,
+  )
+  author: UserEntity
 
   @CreateDateColumn()
   created_at: Date

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import slugify from 'slugify'
 import { ArticleEntity } from '@app/article/article.entity'
+import { UserEntity } from '@app/user/user.entity'
 import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
 
@@ -14,11 +15,13 @@ export class ArticleService {
   ) {}
 
   async createArticle(
+    user: UserEntity,
     createArticleDto: CreateArticleDto,
   ): Promise<ArticleEntity> {
     const article = new ArticleEntity()
     Object.assign(article, createArticleDto)
     article.slug = this.slugify(article.title)
+    article.author = user
     return this.articleRepository.save(article)
   }
 

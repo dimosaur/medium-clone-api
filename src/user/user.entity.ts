@@ -5,8 +5,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm'
 import { hash } from 'bcrypt'
+import { ArticleEntity } from '@app/article/article.entity'
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -27,6 +29,12 @@ export class UserEntity {
 
   @Column({ select: false })
   password: string
+
+  @OneToMany(
+    () => ArticleEntity,
+    (article: ArticleEntity): UserEntity => article.author,
+  )
+  articles: ArticleEntity[]
 
   @CreateDateColumn()
   created_at: Date
