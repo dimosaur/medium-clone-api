@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 
 import { TagEntity } from '@app/tag/tag.entity'
+import TagsResponseInterface from '@app/tag/types/tagsResponse.interface'
 
 @Injectable()
 export class TagService {
@@ -28,5 +29,11 @@ export class TagService {
     return this.tagsRepository.find({
       where: { name: In(tagNames) },
     })
+  }
+
+  buildTagsResponse(tags: TagEntity[]): TagsResponseInterface {
+    return {
+      tags: tags.map(({ name }: TagEntity) => name),
+    }
   }
 }

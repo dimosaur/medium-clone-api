@@ -43,6 +43,12 @@ export class ArticleService {
   }
 
   buildArticleResponse(article: ArticleEntity): ArticleResponseInterface {
-    return { article }
+    const { tags } = this.tagsService.buildTagsResponse(article?.tagList || [])
+    return {
+      article: {
+        ...article,
+        tagList: tags,
+      },
+    }
   }
 }
