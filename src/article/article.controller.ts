@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -16,6 +17,7 @@ import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
 import { UserEntity } from '@app/user/user.entity'
 import { User } from '@app/user/decorators/user.decorator'
+import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
 
 @Controller('articles')
 export class ArticleController {
@@ -46,5 +48,12 @@ export class ArticleController {
     }
 
     return this.articleService.buildArticleResponse(article)
+  }
+
+  @Get()
+  @UsePipes(new ValidationPipe())
+  async articles(@Query() query: ArticlesListQueryDto) {
+    const articles = await this.articleService.findArticles(query)
+    return this.articleService.buildArticlesResponse(articles)
   }
 }

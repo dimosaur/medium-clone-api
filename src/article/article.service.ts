@@ -7,13 +7,14 @@ import { UserEntity } from '@app/user/user.entity'
 import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
 import { TagService } from '@app/tag/tag.service'
+import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
-    private readonly tagsService: TagService,
+    private readonly tagService: TagService,
   ) {}
 
   async createArticle(
@@ -26,7 +27,7 @@ export class ArticleService {
     article.author = user
 
     if (createArticleDto?.tagList?.length) {
-      article.tagList = await this.tagsService.findOrCreateTags(
+      article.tagList = await this.tagService.findOrCreateTags(
         createArticleDto.tagList,
       )
     }
@@ -41,6 +42,30 @@ export class ArticleService {
     })
   }
 
+  async findArticles({
+    tag,
+    author,
+    offset = 0,
+    limit = 2,
+  }: ArticlesListQueryDto): Promise<ArticleEntity[]> {
+    const query = this.articleRepository
+      .createQueryBuilder('articles')
+      .leftJoinAndSelect('articles.tagList', 'tags')
+      .leftJoinAndSelect('articles.author', 'author')
+
+    if (author) {
+      query.where('author.username = :author', { author })
+    }
+
+    if (tag) {
+      query
+        .where('tags.name = :tag', { tag })
+        .leftJoinAndSelect('articles.tagList', 'tagsList')
+    }
+
+    return query.skip(offset).take(limit).getMany()
+  }
+
   private slugify(title: string): string {
     return (
       ((Math.random() * Math.pow(36, 6)) | 0).toString(36) +
@@ -50,12 +75,16 @@ export class ArticleService {
   }
 
   buildArticleResponse(article: ArticleEntity): ArticleResponseInterface {
-    const { tags } = this.tagsService.buildTagsResponse(article?.tagList || [])
+    const { tags } = this.tagService.buildTagsResponse(article?.tagList || [])
     return {
       article: {
         ...article,
         tagList: tags,
       },
     }
+  }
+
+  buildArticlesResponse(articles: ArticleEntity[]): ArticleResponseInterface[] {
+    return articles.map((article) => this.buildArticleResponse(article))
   }
 }
