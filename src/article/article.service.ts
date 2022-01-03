@@ -6,12 +6,14 @@ import { ArticleEntity } from '@app/article/article.entity'
 import { UserEntity } from '@app/user/user.entity'
 import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
+import { TagService } from '@app/tag/tag.service'
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
+    private readonly tagsService: TagService,
   ) {}
 
   async createArticle(
@@ -22,6 +24,13 @@ export class ArticleService {
     Object.assign(article, createArticleDto)
     article.slug = this.slugify(article.title)
     article.author = user
+
+    if (createArticleDto?.tagList?.length) {
+      article.tagList = await this.tagsService.findOrCreateTags(
+        createArticleDto.tagList,
+      )
+    }
+
     return this.articleRepository.save(article)
   }
 

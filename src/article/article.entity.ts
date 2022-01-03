@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
+  Index, JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { UserEntity } from '@app/user/user.entity'
+import { TagEntity } from '@app/tag/tag.entity'
 
 @Entity({ name: 'articles' })
 export class ArticleEntity {
@@ -26,6 +28,10 @@ export class ArticleEntity {
 
   @Column()
   body: string
+
+  @ManyToMany(() => TagEntity)
+  @JoinTable()
+  tagList: TagEntity[]
 
   @ManyToOne(
     () => UserEntity,
