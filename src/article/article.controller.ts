@@ -1,6 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
   Post,
   UseGuards,
   UsePipes,
@@ -28,6 +32,19 @@ export class ArticleController {
       user,
       createArticleDto,
     )
+    return this.articleService.buildArticleResponse(article)
+  }
+
+  @Get(':slug')
+  async article(
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articleService.findBySlug(slug)
+
+    if (!article) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+    }
+
     return this.articleService.buildArticleResponse(article)
   }
 }

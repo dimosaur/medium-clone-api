@@ -34,6 +34,13 @@ export class ArticleService {
     return this.articleRepository.save(article)
   }
 
+  findBySlug(slug: string): Promise<ArticleEntity> {
+    return this.articleRepository.findOne({
+      where: { slug },
+      relations: ['author', 'tagList'],
+    })
+  }
+
   private slugify(title: string): string {
     return (
       ((Math.random() * Math.pow(36, 6)) | 0).toString(36) +
