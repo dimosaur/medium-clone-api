@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
   UsePipes,
@@ -13,12 +14,13 @@ import {
 } from '@nestjs/common'
 import { ArticleService } from '@app/article/article.service'
 import { AuthGuard } from '@app/user/guards/auth.guard'
-import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
+import { ArticleCreateDto } from '@app/article/dto/articleCreate.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
 import { UserEntity } from '@app/user/user.entity'
 import { User } from '@app/user/decorators/user.decorator'
 import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
 import { ArticlesResponseInterface } from '@app/article/types/articlesResponse.interface'
+import { ArticleUpdateDto } from '@app/article/dto/articleUpdate.dto'
 
 @Controller('articles')
 export class ArticleController {
@@ -28,7 +30,7 @@ export class ArticleController {
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createArticle(
-    @Body('article') createArticleDto: CreateArticleDto,
+    @Body('article') createArticleDto: ArticleCreateDto,
     @User() user: UserEntity,
   ): Promise<ArticleResponseInterface> {
     const article = await this.articleService.createArticle(
@@ -60,8 +62,19 @@ export class ArticleController {
     return this.articleService.buildArticlesResponse(articles)
   }
 
-  // @Put(':slug')
-  // @UseGuards(AuthGuard)
-  // @UsePipes(new ValidationPipe())
-  // async updateArticle() {}
+  @Put(':slug')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async updateArticle(
+    @Body('article') articleUpdateDto: ArticleUpdateDto,
+    @Param('slug') slug: string,
+    @User('id') userId: number,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articleService.updateArticle(
+      userId,
+      slug,
+      articleUpdateDto,
+    )
+    return this.articleService.buildArticleResponse(article)
+  }
 }

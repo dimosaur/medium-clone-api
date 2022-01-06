@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional } from 'class-validator'
 
-export class CreateArticleDto {
+export class ArticleCreateDto {
   @IsNotEmpty()
   title: string
 
