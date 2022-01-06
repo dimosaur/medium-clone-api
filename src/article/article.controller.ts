@@ -46,11 +46,6 @@ export class ArticleController {
     @Param('slug') slug: string,
   ): Promise<ArticleResponseInterface> {
     const article = await this.articleService.findBySlug(slug)
-
-    if (!article) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
-    }
-
     return this.articleService.buildArticleResponse(article)
   }
 

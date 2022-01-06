@@ -38,11 +38,17 @@ export class ArticleService {
     return this.articleRepository.save(article)
   }
 
-  findBySlug(slug: string): Promise<ArticleEntity> {
-    return this.articleRepository.findOne({
+  async findBySlug(slug: string): Promise<ArticleEntity> {
+    const article = await this.articleRepository.findOne({
       where: { slug },
       relations: ['author', 'tagList'],
     })
+
+    if (!article) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+    }
+
+    return article
   }
 
   async findArticles({
