@@ -46,11 +46,11 @@ export class ArticleService {
   }
 
   async findArticles({
-                       tag,
-                       author,
-                       offset = 0,
-                       limit = 2,
-                     }: ArticlesListQueryDto): Promise<ArticleEntity[]> {
+    tag,
+    author,
+    offset = 0,
+    limit = 2,
+  }: ArticlesListQueryDto): Promise<ArticleEntity[]> {
     const query = this.articleRepository
       .createQueryBuilder('articles')
       .leftJoinAndSelect('articles.tagList', 'tags')
@@ -92,7 +92,11 @@ export class ArticleService {
       }
     }
 
-    return article
+    if (articleUpdateDto.title) {
+      article.slug = this.slugify(articleUpdateDto.title)
+    }
+
+    return this.articleRepository.save(article)
   }
 
   private slugify(title: string): string {
