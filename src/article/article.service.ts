@@ -99,6 +99,18 @@ export class ArticleService {
     return this.articleRepository.save(article)
   }
 
+  async deleteArticle(userId: number, slug: string) {
+    const article = await this.findBySlug(slug)
+
+    if (article.author.id !== userId) {
+      throw new HttpException('You are not the author', HttpStatus.FORBIDDEN)
+    }
+
+    article.tagList = []
+    await this.articleRepository.save(article)
+    await this.articleRepository.remove(article)
+  }
+
   private slugify(title: string): string {
     return (
       ((Math.random() * Math.pow(36, 6)) | 0).toString(36) +

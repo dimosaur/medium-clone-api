@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -76,5 +77,12 @@ export class ArticleController {
       articleUpdateDto,
     )
     return this.articleService.buildArticleResponse(article)
+  }
+
+  @Delete(':slug')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async deleteArticle(@Param('slug') slug: string, @User('id') userId: number) {
+    await this.articleService.deleteArticle(userId, slug)
   }
 }
