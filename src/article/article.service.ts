@@ -17,8 +17,7 @@ export class ArticleService {
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
     private readonly tagService: TagService,
-  ) {
-  }
+  ) {}
 
   async createArticle(
     user: UserEntity,
