@@ -8,6 +8,7 @@ import { CreateArticleDto } from '@app/article/dto/createArticle.dto'
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface'
 import { TagService } from '@app/tag/tag.service'
 import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
+import { ArticlesResponseInterface } from '@app/article/types/articlesResponse.interface'
 
 @Injectable()
 export class ArticleService {
@@ -84,7 +85,13 @@ export class ArticleService {
     }
   }
 
-  buildArticlesResponse(articles: ArticleEntity[]): ArticleResponseInterface[] {
-    return articles.map((article) => this.buildArticleResponse(article))
+  buildArticlesResponse(articles: ArticleEntity[]): ArticlesResponseInterface {
+    return {
+      articles: articles.map((articleEntity) => {
+        const { article } = this.buildArticleResponse(articleEntity)
+        return article
+      }),
+      articlesCount: articles.length,
+    }
   }
 }

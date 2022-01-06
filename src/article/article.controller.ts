@@ -18,6 +18,7 @@ import { ArticleResponseInterface } from '@app/article/types/articleResponse.int
 import { UserEntity } from '@app/user/user.entity'
 import { User } from '@app/user/decorators/user.decorator'
 import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
+import { ArticlesResponseInterface } from '@app/article/types/articlesResponse.interface'
 
 @Controller('articles')
 export class ArticleController {
@@ -52,8 +53,15 @@ export class ArticleController {
 
   @Get()
   @UsePipes(new ValidationPipe())
-  async articles(@Query() query: ArticlesListQueryDto) {
+  async articles(
+    @Query() query: ArticlesListQueryDto,
+  ): Promise<ArticlesResponseInterface> {
     const articles = await this.articleService.findArticles(query)
     return this.articleService.buildArticlesResponse(articles)
   }
+
+  // @Put(':slug')
+  // @UseGuards(AuthGuard)
+  // @UsePipes(new ValidationPipe())
+  // async updateArticle() {}
 }
