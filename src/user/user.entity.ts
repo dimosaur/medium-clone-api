@@ -1,11 +1,11 @@
 import {
   BeforeInsert,
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm'
 import { hash } from 'bcrypt'
 import { ArticleEntity } from '@app/article/article.entity'

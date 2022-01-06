@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { sign } from 'jsonwebtoken'
-import { hash, compare } from 'bcrypt'
+import { compare, hash } from 'bcrypt'
 
 import { CreateUserDto } from '@app/user/dto/createUser.dto'
 import { UserEntity } from '@app/user/user.entity'
