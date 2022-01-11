@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -22,6 +20,7 @@ import { User } from '@app/user/decorators/user.decorator'
 import { ArticlesListQueryDto } from '@app/article/dto/articlesList.query.dto'
 import { ArticlesResponseInterface } from '@app/article/types/articlesResponse.interface'
 import { ArticleUpdateDto } from '@app/article/dto/articleUpdate.dto'
+import { ArticlesFeedQueryDto } from '@app/article/dto/articlesFeed.query.dto'
 
 @Controller('articles')
 export class ArticleController {
@@ -39,6 +38,20 @@ export class ArticleController {
       createArticleDto,
     )
     return this.articleService.buildArticleResponse(article)
+  }
+
+  @Get('feed')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async articlesFeed(
+    @Query() query: ArticlesFeedQueryDto,
+    @User('username') author: string,
+  ): Promise<ArticlesResponseInterface> {
+    const articles = await this.articleService.findArticles({
+      ...query,
+      author,
+    })
+    return this.articleService.buildArticlesResponse(articles)
   }
 
   @Get(':slug')

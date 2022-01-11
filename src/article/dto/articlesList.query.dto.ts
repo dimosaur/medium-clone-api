@@ -1,22 +1,12 @@
-import { IsInt, IsOptional, IsString } from 'class-validator'
-import { Type } from 'class-transformer'
+import { IsOptional, IsString } from 'class-validator'
+import { ArticlesFeedQueryDto } from '@app/article/dto/articlesFeed.query.dto'
 
-export class ArticlesListQueryDto {
+export class ArticlesListQueryDto extends ArticlesFeedQueryDto {
   @IsOptional()
   @IsString()
-  tag: string
+  tag?: string
 
   @IsOptional()
   @IsString()
-  author: string
-
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  limit: number
-
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  offset: number
+  author?: string
 }
